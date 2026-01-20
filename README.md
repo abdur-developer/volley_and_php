@@ -192,3 +192,68 @@ if ($pass === '113355') {
 
 echo json_encode($result);
 ```
+একটা খুব common সমস্যা 👍
+Android 9 (API 28) থেকে **HTTP (cleartext)** by default ব্লক করে রাখা হয়।
+তাই তোমার লোকাল সার্ভার
+`http://192.168.1.110:8080/`
+Volley দিয়ে কল করলে কাজ করে না।
+
+এটা চালু করতে নিচের যেকোনো **একটা পদ্ধতি** করলেই হবে ✅
+
+---
+
+# ✅ পদ্ধতি–১ (সবচেয়ে সহজ — testing এর জন্য recommended)
+
+### **AndroidManifest.xml**
+
+```xml
+<application
+    android:usesCleartextTraffic="true"
+    android:allowBackup="true"
+    android:theme="@style/Theme.MyApp">
+
+    ...
+</application>
+```
+
+👉 এটা দিলেই HTTP কাজ করবে।
+
+📌 **Debug / testing এর জন্য perfect**
+📌 Production-এ এটা ব্যবহার না করাই ভালো
+
+---
+
+# ✅ পদ্ধতি–২ (Professional & Secure way)
+
+এইটা বড় প্রজেক্টে ব্যবহার করা হয়।
+
+---
+
+### 🔹 `res/xml/network_security_config.xml`
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">
+            192.168.1.110
+        </domain>
+    </domain-config>
+
+</network-security-config>
+```
+
+---
+
+### 🔹 AndroidManifest.xml
+
+```xml
+<application
+    android:networkSecurityConfig="@xml/network_security_config"
+    android:theme="@style/Theme.MyApp">
+
+</application>
+```
+
+---
